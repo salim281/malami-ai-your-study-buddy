@@ -387,6 +387,15 @@ function ChatTab({
   );
 }
 
+function splitTip(content: string): { answer: string; tip: string | null } {
+  const marker = "---STUDY_TIP---";
+  const idx = content.indexOf(marker);
+  if (idx === -1) return { answer: content, tip: null };
+  const answer = content.slice(0, idx).trim();
+  const tip = content.slice(idx + marker.length).replace(/^\s*💡\s*/, "").trim();
+  return { answer, tip: tip || null };
+}
+
 function MessageBubble({ role, content }: { role: string; content: string }) {
   if (role === "user") {
     return (
@@ -397,12 +406,24 @@ function MessageBubble({ role, content }: { role: string; content: string }) {
       </div>
     );
   }
+  const { answer, tip } = splitTip(content);
   return (
     <div className="flex gap-2">
       <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">
         <BookOpen className="h-4 w-4" />
       </div>
-      <div className="max-w-[85%] text-sm whitespace-pre-wrap leading-relaxed pt-0.5">{content}</div>
+      <div className="max-w-[85%] space-y-2 pt-0.5">
+        <div className="text-sm whitespace-pre-wrap leading-relaxed">{answer}</div>
+        {tip && (
+          <div className="rounded-xl border border-amber-300/60 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-700/50 px-3 py-2 text-xs leading-relaxed">
+            <div className="flex items-center gap-1.5 font-semibold text-amber-800 dark:text-amber-200 mb-1">
+              <Sparkles className="h-3.5 w-3.5" />
+              Study tip
+            </div>
+            <div className="whitespace-pre-wrap text-amber-900 dark:text-amber-100">{tip}</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
