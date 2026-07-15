@@ -101,10 +101,12 @@ function MalamiApp() {
         )}
         {tab === "learn" && (
           <LearnTab
-            onStartChat={(subject) => {
-              startFromSubject(subject, setActiveThreadId, setTab);
+            onStartChat={() => {
+              setActiveThreadId(null);
+              setTab("chat");
             }}
           />
+
         )}
         {tab === "quizzes" && <QuizzesTab />}
         {tab === "vocabulary" && <VocabularyTab />}
@@ -142,16 +144,8 @@ function MalamiApp() {
   );
 }
 
-async function startFromSubject(
-  subject: string,
-  setActiveThreadId: (id: string) => void,
-  setTab: (t: Tab) => void,
-) {
-  // handled inside LearnTab via mutation, this is a placeholder for typing
-  void subject;
-  void setActiveThreadId;
-  void setTab;
-}
+
+
 
 function NavItem({
   active,
