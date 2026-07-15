@@ -445,7 +445,7 @@ function LearnTab({ onStartChat }: { onStartChat: () => void }) {
           <button
             key={s.name}
             onClick={() => {
-              onStartChat(s.name);
+              onStartChat();
               startM.mutate(s.name);
             }}
             disabled={startM.isPending}
