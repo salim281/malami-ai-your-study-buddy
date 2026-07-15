@@ -408,7 +408,7 @@ function MessageBubble({ role, content }: { role: string; content: string }) {
 }
 
 /* ---------- LEARN ---------- */
-function LearnTab({ onStartChat }: { onStartChat: (subject: string) => void }) {
+function LearnTab({ onStartChat }: { onStartChat: () => void }) {
   const qc = useQueryClient();
   const create = useServerFn(createThread);
   const send = useServerFn(sendMessage);
