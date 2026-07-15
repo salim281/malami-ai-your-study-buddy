@@ -77,14 +77,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Malami AI — Hausa & English study buddy for JSS/SSS" },
+      {
+        name: "description",
+        content:
+          "Malami AI is a friendly Hausa and English study assistant for Nigerian JSS and SSS students. Chat, learn, quiz yourself and grow your vocabulary.",
+      },
+      { name: "author", content: "Malami AI" },
+      { property: "og:title", content: "Malami AI — Study buddy for JSS/SSS" },
+      {
+        property: "og:description",
+        content:
+          "Ask any secondary school question in Hausa or English. Chat, learn, take quizzes and save new words.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
