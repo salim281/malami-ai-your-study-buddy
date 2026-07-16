@@ -36,6 +36,10 @@ import {
   BookOpen,
   Sparkles,
   RotateCcw,
+  Copy,
+  Check,
+  ThumbsUp,
+  ThumbsDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -81,9 +85,11 @@ function MalamiApp() {
       <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-30">
         <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto w-full">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-600 text-white">
-              <BookOpen className="h-5 w-5" />
-            </div>
+            <img
+              src="/malami-logo.jpg"
+              alt="Malami AI logo"
+              className="h-9 w-9 rounded-xl object-cover ring-1 ring-border"
+            />
             <div>
               <h1 className="font-bold leading-tight">Malami AI</h1>
               <p className="text-[10px] text-muted-foreground leading-tight">Your study buddy</p>
@@ -407,11 +413,34 @@ function MessageBubble({ role, content }: { role: string; content: string }) {
     );
   }
   const { answer, tip } = splitTip(content);
+  const [copied, setCopied] = useState(false);
+  const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
+
+  const copy = async () => {
+    const text = tip ? `${answer}\n\n💡 ${tip}` : answer;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      toast.success("Copied to clipboard");
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      toast.error("Couldn't copy");
+    }
+  };
+  const react = (v: "up" | "down") => {
+    const next = feedback === v ? null : v;
+    setFeedback(next);
+    if (next === "up") toast.success("Thanks for the feedback!");
+    if (next === "down") toast("We'll try to do better next time.");
+  };
+
   return (
     <div className="flex gap-2">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">
-        <BookOpen className="h-4 w-4" />
-      </div>
+      <img
+        src="/malami-logo.jpg"
+        alt="Malami"
+        className="h-7 w-7 shrink-0 rounded-lg object-cover ring-1 ring-border"
+      />
       <div className="max-w-[85%] space-y-2 pt-0.5">
         <div className="text-sm whitespace-pre-wrap leading-relaxed">{answer}</div>
         {tip && (
@@ -423,6 +452,37 @@ function MessageBubble({ role, content }: { role: string; content: string }) {
             <div className="whitespace-pre-wrap text-amber-900 dark:text-amber-100">{tip}</div>
           </div>
         )}
+        <div className="flex items-center gap-1 -ml-1.5">
+          <button
+            onClick={copy}
+            aria-label="Copy message"
+            className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+          >
+            {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+          </button>
+          <button
+            onClick={() => react("up")}
+            aria-label="Thumbs up"
+            aria-pressed={feedback === "up"}
+            className={cn(
+              "p-1.5 rounded-md hover:bg-accent transition-colors",
+              feedback === "up" ? "text-emerald-600" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <ThumbsUp className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={() => react("down")}
+            aria-label="Thumbs down"
+            aria-pressed={feedback === "down"}
+            className={cn(
+              "p-1.5 rounded-md hover:bg-accent transition-colors",
+              feedback === "down" ? "text-destructive" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <ThumbsDown className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
     </div>
   );
