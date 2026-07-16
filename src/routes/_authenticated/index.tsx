@@ -36,6 +36,10 @@ import {
   BookOpen,
   Sparkles,
   RotateCcw,
+  Copy,
+  Check,
+  ThumbsUp,
+  ThumbsDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
