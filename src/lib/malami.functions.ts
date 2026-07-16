@@ -69,6 +69,58 @@ async function callLovableAI(messages: { role: string; content: string }[], opts
   return data.choices?.[0]?.message?.content ?? "";
 }
 
+// ---------- Internal safety checks ----------
+
+// High-risk patterns that we block outright before ever calling the AI.
+const BLOCK_PATTERNS: { re: RegExp; reason: string }[] = [
+  { re: /\b(ignore|disregard|forget|override|bypass)\b[^.\n]{0,40}\b(previous|prior|above|earlier|all)\b[^.\n]{0,40}\b(instruction|prompt|rule|system|message)/i, reason: "instruction-override" },
+  { re: /\b(system prompt|system message|initial prompt|hidden prompt|developer message)\b/i, reason: "system-prompt-probe" },
+  { re: /\b(reveal|show|print|repeat|leak|output)\b[^.\n]{0,40}\b(system|prompt|instruction|rules|guidelines)\b/i, reason: "prompt-exfiltration" },
+  { re: /\b(DAN|do anything now|jailbreak|developer mode|god mode|unrestricted mode|no restrictions|no filter)\b/i, reason: "jailbreak" },
+  { re: /\b(act|pretend|roleplay|behave)\s+as\s+(?!a\s+(teacher|tutor|student))[^.\n]{0,40}(AI|model|assistant|chatgpt|gpt|gemini|claude|hacker|admin|root)/i, reason: "identity-swap" },
+  { re: /\b(api[_\s-]?key|secret[_\s-]?key|access[_\s-]?token|bearer\s+token|password|credentials|env(ironment)?\s+var)/i, reason: "secret-request" },
+  { re: /<\s*\/?\s*(system|assistant|instructions?)\s*>/i, reason: "fake-role-tag" },
+  { re: /\b(sudo|rm\s+-rf|drop\s+table|;--|<script[\s>]|onerror\s*=|javascript:)/i, reason: "code-injection" },
+];
+
+// Softer patterns — we still answer, but warn the model these are untrusted.
+const SUSPICIOUS_PATTERNS: { re: RegExp; reason: string }[] = [
+  { re: /\b(for educational purposes|hypothetically|just kidding|the admin (said|told)|you are being tested|this is a test)\b/i, reason: "social-engineering-framing" },
+  { re: /\b(translate|repeat|echo)\b[^.\n]{0,30}\b(above|previous|system)/i, reason: "echo-attempt" },
+  { re: /(base64|rot13|reverse|decode)\b[^.\n]{0,30}\b(prompt|instruction)/i, reason: "encoding-trick" },
+  { re: /```[\s\S]{0,20}(system|instruction)/i, reason: "embedded-instruction-block" },
+];
+
+export function detectUnsafeInput(input: string): { blocked: boolean; suspicious: boolean; reason: string } {
+  const text = (input ?? "").slice(0, 4000);
+  for (const p of BLOCK_PATTERNS) if (p.re.test(text)) return { blocked: true, suspicious: true, reason: p.reason };
+  for (const p of SUSPICIOUS_PATTERNS) if (p.re.test(text)) return { blocked: false, suspicious: true, reason: p.reason };
+  // Excessive length or unusually many special/control chars → suspicious
+  if (text.length > 3000) return { blocked: false, suspicious: true, reason: "unusually-long-input" };
+  // eslint-disable-next-line no-control-regex
+  const control = (text.match(/[\u0000-\u0008\u000B-\u001F\u007F]/g) ?? []).length;
+  if (control > 5) return { blocked: false, suspicious: true, reason: "control-characters" };
+  return { blocked: false, suspicious: false, reason: "" };
+}
+
+function safeRefusal(_reason: string): string {
+  return `Sannu! I noticed that message dey try make me break my rules or share things wey I no fit share. No wahala — I go stay as your study helper. 😊
+
+Ask me any secondary school question (Math, Science, English, Computer, Social Studies, and more) and I go break am down for you step by step.
+
+---STUDY_TIP---
+💡 When you dey stuck, write the question for paper, underline the key words, then attack am one small step at a time. You go make am!`;
+}
+
+function sanitizeReply(reply: string): string {
+  // Strip any accidental leaked system-prompt echoes or fake role tags from the model output.
+  return reply
+    .replace(/<\/?\s*(system|assistant|instructions?)\s*>/gi, "")
+    .replace(/SECURITY & PROMPT-INJECTION[\s\S]*?(?=---STUDY_TIP---|$)/gi, "")
+    .trim();
+}
+
+
 export const listThreads = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
