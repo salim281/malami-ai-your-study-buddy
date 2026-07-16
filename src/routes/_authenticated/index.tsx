@@ -85,9 +85,11 @@ function MalamiApp() {
       <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-30">
         <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto w-full">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-600 text-white">
-              <BookOpen className="h-5 w-5" />
-            </div>
+            <img
+              src="/malami-logo.jpg"
+              alt="Malami AI logo"
+              className="h-9 w-9 rounded-xl object-cover ring-1 ring-border"
+            />
             <div>
               <h1 className="font-bold leading-tight">Malami AI</h1>
               <p className="text-[10px] text-muted-foreground leading-tight">Your study buddy</p>
