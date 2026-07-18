@@ -85,21 +85,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Malami AI is a friendly Hausa and English study assistant for Nigerian JSS and SSS students. Chat, learn, quiz yourself and grow your vocabulary.",
       },
       { name: "author", content: "Malami AI" },
-      { property: "og:title", content: "Malami AI — Study buddy for JSS/SSS" },
+      { property: "og:title", content: "Malami AI — Hausa & English study buddy for JSS/SSS" },
       {
         property: "og:description",
         content:
-          "Ask any secondary school question in Hausa or English. Chat, learn, take quizzes and save new words.",
+          "Malami AI is a friendly Hausa and English study assistant for Nigerian JSS and SSS students. Chat, learn, quiz yourself and grow your vocabulary.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Malami AI — Hausa & English study buddy for JSS/SSS" },
+      { name: "twitter:description", content: "Malami AI is a friendly Hausa and English study assistant for Nigerian JSS and SSS students. Chat, learn, quiz yourself and grow your vocabulary." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/35cc8b1f-4a65-4938-99ce-dfcc76c1b5c6" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/35cc8b1f-4a65-4938-99ce-dfcc76c1b5c6" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/malami-logo.jpg", type: "image/jpeg" },
+      { rel: "icon", href: "/malami-logo.jpg", type: "image/x-icon" },
       { rel: "apple-touch-icon", href: "/malami-logo.jpg" },
     ],
   }),
