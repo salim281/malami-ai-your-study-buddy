@@ -86,7 +86,7 @@ function MalamiApp() {
         <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto w-full">
           <div className="flex items-center gap-2">
             <img
-              src="/malami-logo.jpg"
+              src="/malami-logo.png"
               alt="Malami AI logo"
               className="h-9 w-9 rounded-xl object-cover ring-1 ring-border"
             />
@@ -437,7 +437,7 @@ function MessageBubble({ role, content }: { role: string; content: string }) {
   return (
     <div className="flex gap-2">
       <img
-        src="/malami-logo.jpg"
+        src="/malami-logo.png"
         alt="Malami"
         className="h-7 w-7 shrink-0 rounded-lg object-cover ring-1 ring-border"
       />
