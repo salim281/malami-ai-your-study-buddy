@@ -83,7 +83,7 @@ function MalamiApp() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-50/30 via-background to-amber-50/30 dark:from-emerald-950/20 dark:via-background dark:to-amber-950/20 flex flex-col">
       <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-30">
-        <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto w-full">
+        <div className="flex items-center justify-between px-4 py-3 max-w-4xl lg:max-w-5xl mx-auto w-full">
           <div className="flex items-center gap-2">
             <img
               src="/malami-logo.png"
@@ -101,7 +101,7 @@ function MalamiApp() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col pb-20 max-w-4xl mx-auto w-full">
+      <main className="flex-1 flex flex-col pb-20 max-w-4xl lg:max-w-5xl mx-auto w-full">
         {tab === "chat" && (
           <ChatTab activeThreadId={activeThreadId} setActiveThreadId={setActiveThreadId} />
         )}
@@ -119,7 +119,7 @@ function MalamiApp() {
       </main>
 
       <nav className="fixed bottom-0 left-0 right-0 border-t bg-card/95 backdrop-blur z-40">
-        <div className="max-w-4xl mx-auto grid grid-cols-4">
+        <div className="max-w-4xl lg:max-w-5xl mx-auto grid grid-cols-4">
           <NavItem
             active={tab === "chat"}
             onClick={() => setTab("chat")}
@@ -521,7 +521,7 @@ function LearnTab({ onStartChat }: { onStartChat: () => void }) {
           Pick a subject and start a guided study chat with Malami.
         </p>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {SUBJECTS.map((s) => (
           <button
             key={s.name}
